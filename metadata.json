@@ -1,0 +1,9 @@
+{
+  "$schema": "https://aka.ms/azure-quickstart-templates-metadata-schema#",
+  "type": "QuickStart",
+  "itemDisplayName": "Dummy Postgres",
+  "description": "Dummy repo to test a postgres deployment.",
+  "summary": "Dummy repo to test a postgres deployment on ARM, not for other usages.",
+  "githubUsername": "theRealLeoJiang",
+  "dateUpdated": "2020-01-18"
+}
