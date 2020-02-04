@@ -149,14 +149,14 @@
             "metadata": {
                 "description": "The size of the new Azure Redis Cache instance. "
             }
-        },
+        }
     },
     "variables": {
         "hostingPlanName": "[concat('hostingplan', uniqueString(resourceGroup().id))]",
         "webSiteName": "[concat('webSite', uniqueString(resourceGroup().id))]",
         "pgserverName": "[concat('pgserver', uniqueString(resourceGroup().id))]",
         "cacheName": "[concat('cache', uniqueString(resourceGroup().id))]",
-        "databaseSkuCapacity": "[2]",
+        "databaseSkuCapacity": "2",
         "location": "[resourceGroup().location]"
     },
     "resources": [
