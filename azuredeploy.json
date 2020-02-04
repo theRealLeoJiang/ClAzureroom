@@ -2,99 +2,6 @@
     "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "databaseSkuName": {
-            "type": "string",
-            "defaultValue": "GP_Gen5_2",
-            "allowedValues": [
-                "GP_Gen5_2",
-                "GP_Gen5_4",
-                "GP_Gen5_8",
-                "GP_Gen5_16",
-                "GP_Gen5_32",
-                "MO_Gen5_2",
-                "MO_Gen5_4",
-                "MO_Gen5_8",
-                "MO_Gen5_16",
-                "MO_Gen5_32",
-                "B_Gen5_1",
-                "B_Gen5_2"
-            ],
-            "metadata": {
-                "description": "Azure database for PostgreSQL sku name "
-            }
-        },
-        "databaseSkuSizeMB": {
-            "type": "int",
-            "allowedValues": [
-                102400,
-                51200
-            ],
-            "defaultValue": 51200,
-            "metadata": {
-                "description": "Azure database for PostgreSQL Sku Size "
-            }
-        },
-        "databaseSkuTier": {
-            "type": "string",
-            "defaultValue": "GeneralPurpose",
-            "allowedValues": [
-                "GeneralPurpose",
-                "MemoryOptimized",
-                "Basic"
-            ],
-            "metadata": {
-                "description": "Azure database for PostgreSQL pricing tier"
-            }
-        },
-        "postgresqlVersion": {
-            "type": "string",
-            "allowedValues": [
-                "9.5",
-                "9.6",
-                "10",
-                "11"
-            ],
-            "defaultValue": "11",
-            "metadata": {
-                "description": "PostgreSQL version"
-            }
-        },
-        "databaseskuFamily": {
-            "type": "string",
-            "defaultValue": "Gen5",
-            "metadata": {
-                "description": "Azure database for PostgreSQL sku family"
-            }
-        },
-        "skuName": {
-            "type": "string",
-            "defaultValue": "F1",
-            "allowedValues": [
-                "F1",
-                "D1",
-                "B1",
-                "B2",
-                "B3",
-                "S1",
-                "S2",
-                "S3",
-                "P1",
-                "P2",
-                "P3",
-                "P4"
-            ],
-            "metadata": {
-                "description": "Describes plan's pricing tier and instance size. Check details at https://azure.microsoft.com/en-us/pricing/details/app-service/"
-            }
-        },
-        "skuCapacity": {
-            "type": "int",
-            "defaultValue": 1,
-            "minValue": 1,
-            "metadata": {
-                "description": "Describes plan's instance count"
-            }
-        },
         "administratorLogin": {
             "type": "string",
             "metadata": {
@@ -112,43 +19,6 @@
             "metadata": {
                 "description": "The name of the new database to create."
             }
-        },
-        "cacheSKUName": {
-            "type": "string",
-            "allowedValues": [
-                "Basic",
-                "Standard"
-            ],
-            "defaultValue": "Basic",
-            "metadata": {
-                "description": "The pricing tier of the new Azure Redis Cache."
-            }
-        },
-        "cacheSKUFamily": {
-            "type": "string",
-            "allowedValues": [
-                "C"
-            ],
-            "defaultValue": "C",
-            "metadata": {
-                "description": "The family for the sku."
-            }
-        },
-        "cacheSKUCapacity": {
-            "type": "int",
-            "allowedValues": [
-                0,
-                1,
-                2,
-                3,
-                4,
-                5,
-                6
-            ],
-            "defaultValue": 0,
-            "metadata": {
-                "description": "The size of the new Azure Redis Cache instance. "
-            }
         }
     },
     "variables": {
@@ -157,6 +27,16 @@
         "pgserverName": "[concat('pgserver', uniqueString(resourceGroup().id))]",
         "cacheName": "[concat('cache', uniqueString(resourceGroup().id))]",
         "databaseSkuCapacity": "2",
+        "databaseSkuName": "GP_Gen5_2",
+        "databaseSkuSizeMB": "51200",
+        "databaseSkuTier": "GeneralPurpose",
+        "postgresqlVersion": "11",
+        "databaseskuFamily": "Gen5",
+        "skuName": "F1",
+        "skuCapacity": "1",
+        "cacheSKUName": "Basic",
+        "cacheSKUFamily": "C",
+        "cacheSKUCapacity": "3",
         "location": "[resourceGroup().location]"
     },
     "resources": [
@@ -166,18 +46,18 @@
             "location": "[variables('location')]",
             "name": "[variables('pgserverName')]",
             "sku": {
-                "name": "[parameters('databaseSkuName')]",
-                "tier": "[parameters('databaseSkuTier')]",
+                "name": "[variables('databaseSkuName')]",
+                "tier": "[variables('databaseSkuTier')]",
                 "capacity": "[variables('databaseSkucapacity')]",
-                "size": "[parameters('databaseSkuSizeMB')]",
-                "family": "[parameters('databaseskuFamily')]"
+                "size": "[variables('databaseSkuSizeMB')]",
+                "family": "[variables('databaseskuFamily')]"
             },
             "properties": {
-                "version": "[parameters('postgresqlVersion')]",
+                "version": "[variables('postgresqlVersion')]",
                 "createMode": "Default",
                 "administratorLogin": "[parameters('administratorLogin')]",
                 "administratorLoginPassword": "[parameters('administratorLoginPassword')]",
-                "storageMB": "[parameters('databaseSkuSizeMB')]"
+                "storageMB": "[variables('databaseSkuSizeMB')]"
             },
             "resources": [
                 {
@@ -204,8 +84,8 @@
                 "displayName": "HostingPlan"
             },
             "sku": {
-                "name": "[parameters('skuName')]",
-                "capacity": "[parameters('skuCapacity')]"
+                "name": "[variables('skuName')]",
+                "capacity": "[variables('skuCapacity')]"
             },
             "properties": {
                 "name": "[variables('hostingPlanName')]"
@@ -270,9 +150,9 @@
             },
             "properties": {
                 "sku": {
-                    "name": "[parameters('cacheSKUName')]",
-                    "family": "[parameters('cacheSKUFamily')]",
-                    "capacity": "[parameters('cacheSKUCapacity')]"
+                    "name": "[variables('cacheSKUName')]",
+                    "family": "[variables('cacheSKUFamily')]",
+                    "capacity": "[variables('cacheSKUCapacity')]"
                 }
             }
         }
