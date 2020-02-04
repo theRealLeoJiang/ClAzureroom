@@ -149,6 +149,13 @@
             "metadata": {
                 "description": "The size of the new Azure Redis Cache instance. "
             }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[UK South]",
+            "metadata": {
+                "description": "Location for all resources."
+            }
         }
     },
     "variables": {
@@ -162,7 +169,7 @@
         {
             "apiVersion": "2017-12-01",
             "type": "Microsoft.DBforPostgreSQL/servers",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "name": "[variables('pgserverName')]",
             "sku": {
                 "name": "[parameters('databaseSkuName')]",
@@ -185,7 +192,7 @@
                     "dependsOn": [
                         "[concat('Microsoft.DBforPostgreSQL/servers/', variables('pgserverName'))]"
                     ],
-                    "location": "[resourceGroup().location]",
+                    "location": "[parameters('location')]",
                     "name": "[concat(variables('pgserverName'),'firewall')]",
                     "properties": {
                         "startIpAddress": "0.0.0.0",
@@ -198,7 +205,7 @@
             "apiVersion": "2015-08-01",
             "name": "[variables('hostingPlanName')]",
             "type": "Microsoft.Web/serverfarms",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "tags": {
                 "displayName": "HostingPlan"
             },
@@ -210,12 +217,11 @@
                 "name": "[variables('hostingPlanName')]"
             }
         },
-
         {
             "apiVersion": "2015-08-01",
             "name": "[variables('webSiteName')]",
             "type": "Microsoft.Web/sites",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "dependsOn": [
                 "[concat('Microsoft.Web/serverFarms/', variables('hostingPlanName'))]",
                 "[concat('Microsoft.Cache/Redis/', variables('cacheName'))]"
@@ -261,7 +267,7 @@
         {
             "name": "[variables('cacheName')]",
             "type": "Microsoft.Cache/Redis",
-            "location": "[resourceGroup().location]",
+            "location": "[parameters('location')]",
             "apiVersion": "2015-08-01",
             "dependsOn": [
             ],
